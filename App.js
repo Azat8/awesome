@@ -3,11 +3,13 @@ import { createStackNavigator, createDrawerNavigator, createAppContainer } from 
 
 import DrawArea from './components/DrawArea';
 import Areas from './components/Areas';
+import CreateArea from './components/CreateArea';
 
 const AppNavigator = createStackNavigator(
   {
     Areas: Areas,
-    DrawArea: DrawArea
+    DrawArea: DrawArea,
+    CreateArea: CreateArea
   },
   {
     initalRouteName: Areas
