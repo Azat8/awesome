@@ -1,25 +1,26 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, FlatList, Alert, Button } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons';
+
+const fetchAllItems = async () => {
+  try {
+    const keys = await AsyncStorage.getAllKeys();
+    const items = await AsyncStorage.multiGet(keys);
+
+    return items;
+  } catch (error) {
+    console.log(error, "problemo");
+  }
+}
 
 export default class Areas extends Component {	
   constructor(props) {
     super(props);
  
-    this.state = { FlatListItems: [
-      {key: 'One'},
-      {key: 'Two'},
-      {key: 'Three'},
-      {key: 'Four'},
-      {key: 'Five'},
-      {key: 'Six'},
-      {key: 'Seven'},
-      {key: 'Eight'},
-      {key: 'Nine'},
-      {key: 'Ten'},
-      {key: 'Eleven'},
-      {key: 'Twelve'}
-    ]}
+    this.state = { 
+    	FlatListItems: []
+    }
 	}
 
 	static navigationOptions = {
@@ -42,6 +43,23 @@ export default class Areas extends Component {
   	Alert.alert(item);
   }
 
+  componentDidMount() {
+  	let areas = [];
+		fetchAllItems().then((items) => {
+			items.forEach((v, i) => {
+				areas.push({
+					id: v[0],
+					data: JSON.parse(v[1])
+				});
+			}); 
+		});
+
+		console.log(areas, 'areas');
+		this.setState({
+			FlatListItems: areas
+		});
+  }
+
   render() {
   	const { navigate } = this.props.navigation;
     return (
@@ -49,7 +67,19 @@ export default class Areas extends Component {
 		   <FlatList
 		      data={ this.state.FlatListItems }
 		      ItemSeparatorComponent = {this.FlatListItemSeparator}
-		      renderItem={({item}) => <Text style={styles.item} onPress={this.GetItem.bind(this, item.key)} > {item.key} </Text>}
+		      renderItem={({item}) => 
+		      	<Text 
+		      		style={styles.item} 
+		      		onPress={() => {
+		      			navigate('AreaView', {
+			      			Address: item.data.Address,
+			      			data: item.data.data
+		      			})
+		      		}}> 
+		      			{item.data.Address} 
+	      		</Text>
+	      	}
+		      keyExtractor={(item) => item.id}
 		    />
 		    <Icon
 		    	style={styles.IconAdd}

@@ -7,7 +7,8 @@ export default class CrateArea extends Component {
 
 		this.state = {
 			Address: '',
-			AreaCode: ''
+			AreaCode: '',
+			Valid: false
 		};
 	}
 
@@ -16,18 +17,21 @@ export default class CrateArea extends Component {
 	}
 
 	_handleAddressChange = (value) => {
-		console.log(value);
+		this.setState({
+			Address: value,
+			Valid: !!value && this.state.AreaCode
+		})
 	}
 
-	_handeleAreaCodeChange = (value) => {
-		console.log(value);
-	}
-
-	_submitForm() {
-
+	_handleAreaCodeChange = (value) => {
+		this.setState({
+			AreaCode: value,
+			Valid: !!value && !!this.state.Address
+		})
 	}
 
 	render() {
+		const { navigate } = this.props.navigation;
 		return(
 			<View style={styles.Form}>
 				<TextInput
@@ -41,9 +45,16 @@ export default class CrateArea extends Component {
 					onChangeText={this._handleAreaCodeChange}
 				/>
 				<TouchableOpacity
-          style = {styles.SubmitButton}
-          onPress = {this._submitForm}>
-           <Text style = {styles.SubmitButtonText}> Submit </Text>
+					disabled={!this.state.Valid}	
+          style={styles.SubmitButton}
+          onPress={() => navigate('DrawArea', this.state)}
+          style={{
+					    backgroundColor: this.state.Valid ? '#000' : '#ddd',
+					    padding: 10,
+					    marginTop: 15,
+					    height: 40,
+					   }}>
+           <Text style={styles.SubmitButtonText}>Next</Text>
         </TouchableOpacity>
 			</View>
 		);
@@ -61,12 +72,12 @@ const styles = StyleSheet.create({
 		borderBottomColor: '#ddd'
 	},
 	SubmitButton: {
-      backgroundColor: '#7a42f4',
-      padding: 10,
-      margin: 15,
-      height: 40,
+    backgroundColor: '#7a42f4',
+    padding: 10,
+    marginTop: 15,
+    height: 40,
    },
    SubmitButtonText:{
-      color: 'white'
+    color: 'white'
    }
 })

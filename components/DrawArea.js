@@ -13,9 +13,11 @@ import {
   PanResponder,
   TouchableHighlight,
   TouchableNativeFeedback, 
-  TouchableWithoutFeedback,
+  TouchableWithoutFeedback
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons';
+import UUID from 'react-native-uuid';
 import { Header } from 'react-navigation';
 import HeaderNavigation from './HeaderNavigation';
 import Areas from './Areas';
@@ -32,41 +34,54 @@ class DrawArea extends Component {
   constructor(props) {
     super(props);
     
-    this.state = {
-      index: 0,
-      firstTouchSelected: false,
-      dataSource: {},
-      selected: (new Map())
-    };
-    
     this._panResponder = this.setUpPanResponder();
     this.navigate = this.props.navigation;
-    console.log(this.navigate);
   }
 
+  state = {
+    index: 0,
+    activeItemCount: 0,
+    firstTouchSelected: false,
+    dataSource: {},
+    selected: (new Map())
+  };  
+
   static navigationOptions = ({ navigation }) => ({
-    title: 'Bagratunyants st...',
-    headerLeft: (
-      <Icon
-        onPress={() => navigation.navigate('Areas')}
-        name="ios-arrow-back"
-        color="black"
-        size={30}
-        style={{ paddingLeft: 20 }}
-      />
-    ),
+    title: navigation.getParam('Address', '...'),
     headerRight: (
-      <View style={{ paddingRight: 20 }}>
+      <View 
+        style={{
+            margin: 10,
+            padding: 10
+        }}>
         <Button
-          size={30}
-          title="Save area"
-          color="#000"
-          accessibilityLabel="Save area"
-          onPress={() => alert('Save area!')}
+          onPress={() => {
+            if(navigation.getParam('hasActiveItem')) {
+              DrawArea._saveArea(navigation);
+            }
+          }}
+          title="Learn More"
+          color={navigation.getParam('hasActiveItem') ? '#000' : '#ddd'}
         />
       </View>
-    ),
+    )
   })
+
+  static _saveArea(navigation) {
+    // console.log(navigation.getParam('data'), navigation);
+    const data = {
+      data: navigation.getParam('data'),
+      Address: navigation.getParam('Address'),
+      AreaCode: navigation.getParam('AreaCode')
+    }
+    console.log(data, UUID.v1());
+    try {
+      AsyncStorage.setItem(UUID.v1(), JSON.stringify(data));
+      navigation.navigate('Areas');
+    } catch(e) {
+      console.log(e);
+    }
+  }
 
   getColumn(x, y, press) {
     press = press || false;
@@ -86,24 +101,36 @@ class DrawArea extends Component {
     
     if(currentCell) {
       if(!press) {
-        currentCell.selected = this.state.firstTouchSelected; 
+        currentCell.selected = this.state.firstTouchSelected;
+        this.setState({
+          activeItemCount: currentCell.selected ? ++this.state.activeItemCount : --this.state.activeItemCount
+        });
       } else {
         currentCell.selected = !currentCell.selected;
         this.setState({
-          firstTouchSelected: currentCell.selected
+          firstTouchSelected: currentCell.selected,
+          activeItemCount: currentCell.selected ? ++this.state.activeItemCount : --this.state.activeItemCount
         })
       }
+
+      this.props.navigation.setParams({
+        data: this.state.dataSource
+      });
+
     }
 
     this.setState({
       dataSource: this.state.dataSource
     });
-  
+
+    this.props.navigation.setParams({ 
+      hasActiveItem: !!this.state.activeItemCount
+    });       
   }
 
   setUpPanResponder() {
     return PanResponder.create({
-    // Ask to be the responder:
+      // Ask to be the responder:
       onStartShouldSetPanResponder: (evt, gestureState) => true,
       onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
       onMoveShouldSetPanResponder: (evt, gestureState) => true,
@@ -148,6 +175,11 @@ class DrawArea extends Component {
 
   componentDidMount() {
     var that = this;
+    
+    this.props.navigation.setParams({ 
+      hasActiveItem: false
+    });
+
     items = Array.apply(null, Array(columns * rows)).map((v, i) => {
       return { 
         id: i,
@@ -192,6 +224,15 @@ const styles = StyleSheet.create({
   column: {
     
   },
+  SubmitButton: {
+    backgroundColor: '#7a42f4',
+    padding: 10,
+    marginTop: 15,
+    height: 40,
+   },
+   SubmitButtonText: {
+    color: 'white'
+   }
 });
 
 class ColumnItem extends React.PureComponent {
@@ -199,7 +240,6 @@ class ColumnItem extends React.PureComponent {
     const bgColor = this.props.selected ? '#1a1a1a' : '#ccc';
     return (
       <TouchableWithoutFeedback>
-
         <View
           style={{
             justifyContent: 'center',
@@ -209,11 +249,9 @@ class ColumnItem extends React.PureComponent {
             borderWidth: 1,
             borderColor: '#1a1a1a',
             width: Dimensions.get('window').width / columns
-          }}
-        >
+          }}>
           <Text>{ this.props.id.toString()}</Text>
         </View>
-
       </TouchableWithoutFeedback>
     );
   }

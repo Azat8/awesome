@@ -4,12 +4,14 @@ import { createStackNavigator, createDrawerNavigator, createAppContainer } from 
 import DrawArea from './components/DrawArea';
 import Areas from './components/Areas';
 import CreateArea from './components/CreateArea';
+import AreaView from './components/AreaView';
 
 const AppNavigator = createStackNavigator(
   {
     Areas: Areas,
     DrawArea: DrawArea,
-    CreateArea: CreateArea
+    CreateArea: CreateArea,
+    AreaView: AreaView
   },
   {
     initalRouteName: Areas
