@@ -91,7 +91,7 @@ class AreaView extends Component {
   }
 
   getHome() {
-    console.log(this.props.navigation, 'navigation');
+    return this.props.navigation;
   }
 
   _renderItem = ({item}) => {
@@ -99,6 +99,7 @@ class AreaView extends Component {
       <ColumnItem
         id={item.id}
         selected={this.state.dataSource[item.id].selected}
+        navigate={this.navigate}
       />
     );
   }
@@ -140,7 +141,9 @@ class ColumnItem extends React.PureComponent {
     const bgColor = this.props.selected ? '#1a1a1a' : '#ccc';
     return (
       <TouchableHighlight
-        onPress={this.props.getHome}
+        onPress={() => {
+          this.props.navigate.navigate('HomeView', this.props);
+        }}
       >
         <View
           style={{
