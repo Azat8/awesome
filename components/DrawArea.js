@@ -12,15 +12,13 @@ import {
   StatusBar,
   PanResponder,
   TouchableHighlight,
-  TouchableNativeFeedback, 
+  TouchableNativeFeedback,
   TouchableWithoutFeedback
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons';
 import UUID from 'react-native-uuid';
 import { Header } from 'react-navigation';
-import HeaderNavigation from './HeaderNavigation';
-import Areas from './Areas';
 
 let columns = 7;
 let rows = 15;
@@ -214,26 +212,7 @@ class DrawArea extends Component {
         </View>
     );
   }
-}
- 
-const styles = StyleSheet.create({
-  MainContainer: {
-    justifyContent: 'center',
-    flex: 1
-  },
-  column: {
-    
-  },
-  SubmitButton: {
-    backgroundColor: '#7a42f4',
-    padding: 10,
-    marginTop: 15,
-    height: 40,
-   },
-   SubmitButtonText: {
-    color: 'white'
-   }
-});
+} 
 
 class ColumnItem extends React.PureComponent {
   render() {
@@ -256,5 +235,24 @@ class ColumnItem extends React.PureComponent {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  MainContainer: {
+    justifyContent: 'center',
+    flex: 1
+  },
+  column: {
+    
+  },
+  SubmitButton: {
+    backgroundColor: '#7a42f4',
+    padding: 10,
+    marginTop: 15,
+    height: 40,
+   },
+   SubmitButtonText: {
+    color: 'white'
+   }
+});
 
 export default DrawArea;

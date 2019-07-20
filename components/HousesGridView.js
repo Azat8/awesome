@@ -4,7 +4,10 @@ import {
   Text,
   FlatList,
   StyleSheet,
-  Dimensions
+  TouchableWithoutFeedback,
+  Dimensions,
+  StatusBar,
+  Header
 } from 'react-native';
 
 import GlobalVars from '../GlobalVars';
@@ -15,10 +18,22 @@ class RenderHouse extends React.PureComponent {
 	}
 
 	render() {
+    let squareSize = GlobalVars.width / this.props.item.item.numHouses;
 		return (
-			<View style={styles.FlatItem}>
-				<Text style={styles.ItemText}>{ this.props.item.index }</Text>
-			</View>
+      <TouchableWithoutFeedback>
+        <View style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: squareSize,
+          backgroundColor: '#ddd',
+          borderWidth: 1,
+          borderColor: '#1a1a1a',
+          width: squareSize
+        }}>
+          <Text style={styles.ItemText}>{ this.props.item.index }</Text>
+        </View>
+      </TouchableWithoutFeedback>
+    
 		);
 	}
 }
@@ -67,32 +82,38 @@ export default class HousesGridView extends Component {
 
   render() {
     return (
-      <View style={styles.FlatListContainer}>
+      // <View style={styles.FlatListContainer}>
         <FlatList
+          style={styles.FlatListContainer}
 					data={this.state.houses}
 					renderItem={this._renderItem}
           keyExtractor={(item) => item.homeNumber.toString()}
           numColumns={this.state.numberOfHouses}
           key={this.state.numberOfHouses}
 				/>
-      </View>
+      // </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
   FlatListContainer: {
-    flex: 1,
-    marginVertical: 20, 
+    // justifyContent: 'center',
+    // flexDirection: 'row',
+    flex: 1 ,
+    marginVertical: 20
   },
   FlatItem: {
     backgroundColor: '#6495ED',
+    alignItems: 'center',
+    justifyContent: 'center',
     flex: 1, 
     margin: 1
   },
   ItemText: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 100,
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    // height: 100,
   }
+
 });
