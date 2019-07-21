@@ -10,15 +10,15 @@ import HousesGridView from './components/HousesGridView';
 
 const AppNavigator = createStackNavigator(
   {
+    HousesGridView: HousesGridView,
     Areas: Areas,
     DrawArea: DrawArea,
     CreateArea: CreateArea,
     AreaView: AreaView,
     HomeView: HomeView,
-    HousesGridView: HousesGridView
   },
   {
-    initalRouteName: Areas
+    initalRouteName: HousesGridView
   }
 );
 

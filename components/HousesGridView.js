@@ -5,6 +5,7 @@ import {
   FlatList,
   StyleSheet,
   TouchableWithoutFeedback,
+  TouchableHighlight,
   Dimensions,
   StatusBar,
   Header
@@ -18,21 +19,27 @@ class RenderHouse extends React.PureComponent {
 	}
 
 	render() {
+    console.log(this.props);
     let squareSize = GlobalVars.width / this.props.item.item.numHouses;
 		return (
-      <TouchableWithoutFeedback>
-        <View style={{
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: squareSize,
-          backgroundColor: '#ddd',
-          borderWidth: 1,
-          borderColor: '#1a1a1a',
-          width: squareSize
-        }}>
-          <Text style={styles.ItemText}>{ this.props.item.index }</Text>
+      <TouchableHighlight
+        onPress={() => {
+          this.props.navigate.navigate('HomeView', this.props);
+        }}
+      >
+        <View
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: 50,
+            backgroundColor: '#ddd',
+            borderWidth: 1,
+            borderColor: '#1a1a1a',
+            width: squareSize
+          }}>
+          <Text>{ this.props.item.index }</Text>
         </View>
-      </TouchableWithoutFeedback>
+      </TouchableHighlight>
     
 		);
 	}
@@ -52,10 +59,17 @@ export default class HousesGridView extends Component {
 
   componentDidMount() {
     let navProps = this.props.navigation.state.params;
+    // this._generateHouses(
+    //   navProps.numberOfFloors, 
+    //   navProps.numberOfHouses, 
+    //   navProps.startHouseNumber
+    // );
+
+
     this._generateHouses(
-      navProps.numberOfFloors, 
-      navProps.numberOfHouses, 
-      navProps.startHouseNumber
+      10, 
+      4, 
+      1
     );
   }
 
@@ -81,18 +95,22 @@ export default class HousesGridView extends Component {
 	}
 
   render() {
-    return (
-      // <View style={styles.FlatListContainer}>
-        <FlatList
-          style={styles.FlatListContainer}
-					data={this.state.houses}
-					renderItem={this._renderItem}
-          keyExtractor={(item) => item.homeNumber.toString()}
-          numColumns={this.state.numberOfHouses}
-          key={this.state.numberOfHouses}
-				/>
-      // </View>
-    );
+    if(this.state.numHouses) {
+      return (
+        <View style={styles.FlatListContainer}>
+          <FlatList
+            data={this.state.houses}
+            renderItem={this._renderItem}
+            keyExtractor={(item) => item.homeNumber.toString()}
+            numColumns={this.state.numHouses}
+            // key={this.state.numberOfHouses}
+          />
+        </View>
+      );
+    }
+
+    return null;
+
   }
 }
 
@@ -101,7 +119,7 @@ const styles = StyleSheet.create({
     // justifyContent: 'center',
     // flexDirection: 'row',
     flex: 1 ,
-    marginVertical: 20
+    // marginVertical: 20
   },
   FlatItem: {
     backgroundColor: '#6495ED',
