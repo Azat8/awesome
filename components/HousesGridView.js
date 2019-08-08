@@ -4,9 +4,9 @@ import {
   Text,
   FlatList,
   StyleSheet,
-  TouchableWithoutFeedback,
+  Modal,
   TouchableHighlight,
-  Dimensions,
+  Alert,
   StatusBar,
   Header
 } from 'react-native';
@@ -16,7 +16,17 @@ import GlobalVars from '../GlobalVars';
 class RenderHouse extends React.PureComponent {
 	constructor(props) {
     super(props);
-	}
+  }
+  
+  state = {
+    visible: false
+  }
+
+  toggleModal(visible) {
+    this.setState({
+      visible: visible
+    });
+  }  
 
 	render() {
     console.log(this.props);
@@ -24,14 +34,36 @@ class RenderHouse extends React.PureComponent {
 		return (
       <TouchableHighlight
         onPress={() => {
-          this.props.navigate.navigate('HomeView', this.props);
+          this.toggleModal(true);
         }}
       >
+        <View style={{marginTop: 22}}>
+          <Modal
+            animationType="slide"
+            transparent={false}
+            visible={this.state.modalVisible}
+            onRequestClose={() => {
+              Alert.alert('Modal has been closed.');
+            }}>
+            <View style={{marginTop: 22}}>
+              <View>
+                <Text>Hello World!</Text>
+
+                <TouchableHighlight
+                  onPress={() => {
+                    this.setModalVisible(!this.state.modalVisible);
+                  }}>
+                  <Text>Hide Modal</Text>
+                </TouchableHighlight>
+              </View>
+            </View>
+          </Modal>
+        </View>
         <View
           style={{
             justifyContent: 'center',
             alignItems: 'center',
-            height: 50,
+            height: 100,
             backgroundColor: '#ddd',
             borderWidth: 1,
             borderColor: '#1a1a1a',
