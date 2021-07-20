@@ -12,7 +12,7 @@
     "buffer": "^5.2.1",
     "events": "^3.0.0",
     "react": "16.8.3",
-    "react-native": "0.59.3",
+    "react-native": "0.62.3",
     "react-native-canvas": "^0.1.31",
     "react-native-gesture-handler": "^1.2.1",
     "react-native-multiple-choice": "0.0.8",
